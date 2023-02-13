@@ -1,6 +1,9 @@
-﻿using FeiraLivre.Application.InputModels;
-using FeiraLivre.Application.Interfaces;
-using FeiraLivre.Application.ViewModels;
+﻿using AutoMapper;
+using FeiraLivre.Api.Models;
+using FeiraLivre.Api.ViewModels;
+using FeiraLivre.Core.Entities;
+using FeiraLivre.Core.Interfaces.UseCases;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -10,11 +13,13 @@ namespace FeiraLivre.Api.Controllers
     [ApiController]
     public class FeiraLivreController : ControllerBase
     {
-        private readonly IFeiraLivreService _feiraLivreService;
+        private readonly IMapper _mapper;
+        private readonly IFeiraLivreUseCase _feiraLivreUseCase;
 
-        public FeiraLivreController(IFeiraLivreService feiraLivreService)
+        public FeiraLivreController(IMapper mapper,  IFeiraLivreUseCase feiraLivreUseCase, IValidator<CadastrarFeiraLivreInputModel> cadastrarFeiraLivreValidator, IValidator<AlterarFeiraLivreInputModel> alterarFeiraLivreValidator)
         {
-            _feiraLivreService = feiraLivreService;
+            _mapper                         = mapper;
+            _feiraLivreUseCase              = feiraLivreUseCase;
         }
 
         /// <summary>
@@ -28,12 +33,13 @@ namespace FeiraLivre.Api.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType((int)HttpStatusCode.NotAcceptable)]
         [ProducesResponseType(typeof(FeiraLivreViewModel), (int)HttpStatusCode.Created)]
         [Produces("application/json")]
-        public async Task<IActionResult> Post([FromBody] CadastrarFeiraLivreInputModel inputModel)
+        public async Task<IActionResult> Cadastrar([FromBody] CadastrarFeiraLivreInputModel inputModel)
         {
-            return CreatedAtAction(nameof(Get), await _feiraLivreService.Post(inputModel));
+            var result = await _feiraLivreUseCase.Cadastrar(_mapper.Map<CadastrarFeiraLivreInputModel, FeiraLivreEntity>(inputModel));
+            
+            return CreatedAtAction(nameof(Listar), _mapper.Map<FeiraLivreEntity, FeiraLivreViewModel>(result));
         }
 
         /// <summary>
@@ -47,14 +53,14 @@ namespace FeiraLivre.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(List<FeiraLivreViewModel>), (int)HttpStatusCode.OK)]
         [Produces("application/json")]
-        public async Task<IActionResult> GetByDistrito(string distrito)
+        public async Task<IActionResult> ListarPorDistrito(string distrito)
         {
-            var response = await _feiraLivreService.GetByDistrito(distrito);
+            var result = await _feiraLivreUseCase.ListarPorDistrito(distrito);
 
-            if (response == null)
+            if (result == null)
                 return NotFound();
 
-            return Ok(response);
+            return Ok(_mapper.Map<List<FeiraLivreEntity>, List<FeiraLivreViewModel>>(result));
         }
 
         /// <summary>
@@ -68,14 +74,14 @@ namespace FeiraLivre.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
         [ProducesResponseType(typeof(List<FeiraLivreViewModel>), (int)HttpStatusCode.OK)]
         [Produces("application/json")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Listar()
         {
-            var response = await _feiraLivreService.Get();
+            var response = await _feiraLivreUseCase.Listar();
 
             if (response == null)
                 return NotFound();
 
-            return Ok(response);
+            return Ok(_mapper.Map<List<FeiraLivreEntity>, List<FeiraLivreViewModel>>(response));
         }
 
         /// <summary>
@@ -89,9 +95,9 @@ namespace FeiraLivre.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotAcceptable)]
-        public async Task<IActionResult> Put([FromBody] AlterarFeiraLivreInputModel inputModel)
+        public async Task<IActionResult> Atualizar([FromBody] AlterarFeiraLivreInputModel inputModel)
         {
-            await _feiraLivreService.Update(inputModel);
+         await _feiraLivreUseCase.Atualizar(_mapper.Map<AlterarFeiraLivreInputModel, FeiraLivreEntity>(inputModel));
 
             return NoContent();
         }
@@ -106,9 +112,9 @@ namespace FeiraLivre.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotAcceptable)]
-        public async Task<IActionResult> DeleteById(string id)
+        public async Task<IActionResult> DeletarPorId(string id)
         {
-            await _feiraLivreService.DeleteById(id);
+            await _feiraLivreUseCase.DeletarPorId(id);
 
             return NoContent();
         }

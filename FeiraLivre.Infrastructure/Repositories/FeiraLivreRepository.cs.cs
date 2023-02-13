@@ -1,14 +1,7 @@
 ﻿using FeiraLivre.Core.Entities;
-using FeiraLivre.Core.Interfaces;
+using FeiraLivre.Core.Interfaces.Repository;
 using FeiraLivre.Infrastructure.DbContext;
 using MongoDB.Driver;
-using SharpCompress.Common;
-//using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FeiraLivre.Infrastructure.Repositories
 {
@@ -23,36 +16,45 @@ namespace FeiraLivre.Infrastructure.Repositories
             _feiraLivreCollection   = _connection.CreateConnection();
         }
 
-        public async Task<FeiraLivreEntity> Post(FeiraLivreEntity feiraLivreEntity)
+        public async Task<FeiraLivreEntity> Cadastrar(FeiraLivreEntity feiraLivreEntity)
         {
             await _feiraLivreCollection.InsertOneAsync(feiraLivreEntity);
 
-            return await GetById(feiraLivreEntity.Id);
+            return await ObterPorId(feiraLivreEntity.Id);
         }
 
-        public async Task<FeiraLivreEntity> GetById(string id)
+        public async Task<FeiraLivreEntity> ObterPorBairroENome(string bairro, string nome)
         {
-            return await _feiraLivreCollection.FindAsync(f => f.Id == id).Result.FirstAsync();
+            return await _feiraLivreCollection.FindAsync(f => f.Bairro == bairro && f.Nome == nome).Result.FirstOrDefaultAsync();
         }
 
-        public async Task<List<FeiraLivreEntity>> GetByDistrito(string distrito)
+        public async Task<List<FeiraLivreEntity>> ListarPorDistrito(string distrito)
         {
             return await _feiraLivreCollection.FindAsync(f => f.Distrito == distrito).Result.ToListAsync();
         }
 
-        public async Task <List<FeiraLivreEntity>> Get()
+        public async Task<List<FeiraLivreEntity>> Listar()
         {
-            return await _feiraLivreCollection.Find(_ => true).ToListAsync();
+            return await _feiraLivreCollection.Find(_ => true).ToListAsync(); ;
         }
 
-        public async Task Update(FeiraLivreEntity feiraLivreEntity)
+        public async Task<bool> Atualizar(FeiraLivreEntity feiraLivreEntity)
         {
-            await _feiraLivreCollection.ReplaceOneAsync(f => f.Id == feiraLivreEntity.Id, feiraLivreEntity);
+            var feiraAtualizada = await _feiraLivreCollection.ReplaceOneAsync(f => f.Id == feiraLivreEntity.Id, feiraLivreEntity);
+
+            return feiraAtualizada.ModifiedCount > 0;
         }
 
-        public async Task DeleteById(string id)
+        public async Task<bool> DeletarPorId(string id)
         {
-            await _feiraLivreCollection.DeleteOneAsync(d => d.Id == id);
+            var feiraDeletada = await _feiraLivreCollection.DeleteOneAsync(d => d.Id == id);
+
+            return feiraDeletada.DeletedCount > 0;
+        }
+
+        public async Task<FeiraLivreEntity> ObterPorId(string id)
+        {
+            return await _feiraLivreCollection.FindAsync(f => f.Id == id).Result.FirstOrDefaultAsync();
         }
     }
 }

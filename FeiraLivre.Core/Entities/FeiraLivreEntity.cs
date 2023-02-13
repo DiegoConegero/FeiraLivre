@@ -5,7 +5,7 @@ namespace FeiraLivre.Core.Entities
 {
     public class FeiraLivreEntity
     {
-        [BsonId]
+        [BsonId] 
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
 

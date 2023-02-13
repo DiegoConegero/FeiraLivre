@@ -7,13 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Exceptions\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="Configuration\" />
+    <PackageReference Include="FluentValidation" Version="11.5.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.19.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MongoDB.Bson" Version="2.19.0" />
+    <Folder Include="Enums\" />
   </ItemGroup>
 
 </Project>

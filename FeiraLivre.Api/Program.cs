@@ -1,37 +1,35 @@
-using FeiraLivre.Application.Interfaces;
-using FeiraLivre.Application.Mapping;
+using FeiraLivre.Api.Mapping;
 using FeiraLivre.Application.Middleware;
-using FeiraLivre.Application.Services;
-using FeiraLivre.Core.Interfaces;
+using FeiraLivre.Application.UseCases;
 using FeiraLivre.Infrastructure.DbContext;
 using FeiraLivre.Infrastructure.Repositories;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using Serilog;
+using Serilog.Formatting.Json;
+using FeiraLivre.Core.Interfaces.Repository;
+using FeiraLivre.Core.Interfaces.UseCases;
+using FluentValidation;
+using FeiraLivre.Api.Models;
+using FeiraLivre.Core.Entities.Validators;
+using FeiraLivre.Core.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole().AddConfiguration();
+builder.Host.UseSerilog();
 
-//builder.Logging.AddProvider()
-var loggerFactory = LoggerFactory.Create(lb => lb.AddConfiguration(builder.Configuration));
+var logPath = $"{builder.Configuration.GetSection("LogFile").GetSection("Diretorio").Value}.{builder.Configuration.GetSection("LogFile").GetSection("Extensao").Value}";
 
-//builder.WebHost.ConfigureLogging((hostingContext, logging) =>
-//{
-//    logging.AddFilter("path/to/Logs/myapp-{Date}.txt");
-//});
-
-//builder.Logging.AddConfiguration(new )
-
-LoggerFactory teste = new LoggerFactory();
+builder.Host.UseSerilog((hostContext, services, configuration) => {
+    configuration.WriteTo.File(new JsonFormatter(), logPath, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Verbose);
+}, true);
 
 // Add services to the container.
 builder.Services.AddAutoMapper(typeof(FeiraLivreProfile));
 builder.Services.AddTransient<IFeiraLivreRepository, FeiraLivreRepository>();
-builder.Services.AddTransient<IFeiraLivreService, FeiraLivreService>();
+builder.Services.AddTransient<IFeiraLivreUseCase, FeiraLivreUseCase>();
 builder.Services.AddTransient<IDbConnectionFeiraLivre, DbConnectionFeiraLivre>();
+builder.Services.AddTransient<IValidator<FeiraLivreEntity>, FeiraLivreEntityValidator>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -60,10 +58,6 @@ builder.Services.Configure<DbConfigurationFeiraLivre>(builder.Configuration.GetS
     });
 
 var app = builder.Build();
-
-
-//ILogger<ErrorHandlerMiddleware> logger = app.Services.GetRequiredService<ILogger<ErrorHandlerMiddleware>>();
-//logger.LogTrace()
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
