@@ -16,7 +16,7 @@ namespace FeiraLivre.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IFeiraLivreUseCase _feiraLivreUseCase;
 
-        public FeiraLivreController(IMapper mapper,  IFeiraLivreUseCase feiraLivreUseCase, IValidator<CadastrarFeiraLivreInputModel> cadastrarFeiraLivreValidator, IValidator<AlterarFeiraLivreInputModel> alterarFeiraLivreValidator)
+        public FeiraLivreController(IMapper mapper,  IFeiraLivreUseCase feiraLivreUseCase)
         {
             _mapper                         = mapper;
             _feiraLivreUseCase              = feiraLivreUseCase;

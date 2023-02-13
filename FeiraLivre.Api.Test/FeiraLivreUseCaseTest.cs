@@ -74,7 +74,7 @@ namespace FeiraLivre.Api.Test
         public async Task CadastrarDadosDuplicadosRetornaExcecao(FeiraLivreEntity feiraLivreEntity, string descricaoErro)
         {
             var fixture             = new Fixture();
-            var feiraLivreFixture    = fixture.Create<FeiraLivreEntity>();
+            var feiraLivreFixture   = fixture.Create<FeiraLivreEntity>();
 
             _mockFeiraLivreRepository
                 .Setup(s => s.Cadastrar(It.IsAny<FeiraLivreEntity>()))

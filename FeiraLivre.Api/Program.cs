@@ -41,14 +41,14 @@ builder.Services.Configure<DbConfigurationFeiraLivre>(builder.Configuration.GetS
     {
         options.SwaggerDoc("v1", new OpenApiInfo
         {
-            Title = "TEste Catálogo de feiras livres de São Paulo",
-            Version = $"{builder.Environment.EnvironmentName} - v1 - {DateTime.Now}",
+            Title       = "Catálogo de feiras livres de São Paulo",
+            Version     = $"{builder.Environment.EnvironmentName} - v1 - {DateTime.Now}",
             Description = "Consulta e manutenção de feiras livres de São Paulo",
-            Contact = new OpenApiContact
+            Contact     = new OpenApiContact
             {
-                Name = "Diego Munhoz Conegero",
-                //Url     = new Uri(SwaggerConstante.UrlContato),
-                Email = "diego.conegero@gmail.com"
+                Name    = "Diego Munhoz Conegero",
+                Url     = new Uri("https://www.linkedin.com/in/diego-munhoz-conegero-4b7402b1/"),
+                Email   = "diego.conegero@gmail.com"
             }
         });
 
