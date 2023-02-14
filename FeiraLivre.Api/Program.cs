@@ -16,8 +16,8 @@ using FeiraLivre.Core.Entities;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog();
-
-var logPath = $"{builder.Configuration.GetSection("LogFile").GetSection("Diretorio").Value}.{builder.Configuration.GetSection("LogFile").GetSection("Extensao").Value}";
+var filePath = $@"{Directory.GetParent(Directory.GetCurrentDirectory()).FullName}\LogTrace\Log";
+var logPath = $"{filePath}.{builder.Configuration.GetSection("LogFile").GetSection("Extensao").Value}";
 
 builder.Host.UseSerilog((hostContext, services, configuration) => {
     configuration.WriteTo.File(new JsonFormatter(), logPath, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Verbose);

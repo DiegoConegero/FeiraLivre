@@ -10,10 +10,11 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-#COPY ["FeiraLivre.Api/FeiraLivre.Api.csproj", "FeiraLivre.Api/"]
-#RUN dotnet restore "FeiraLivre.Api/FeiraLivre.Api.csproj"
-COPY *.csproj ./
-RUN dotnet restore
+COPY ["FeiraLivre.Api/FeiraLivre.Api.csproj", "FeiraLivre.Api/"]
+COPY ["FeiraLivre.Application/FeiraLivre.Application.csproj", "FeiraLivre.Application/"]
+COPY ["FeiraLivre.Core/FeiraLivre.Core.csproj", "FeiraLivre.Core/"]
+COPY ["FeiraLivre.Infrastructure/FeiraLivre.Infrastructure.csproj", "FeiraLivre.Infrastructure/"]
+RUN dotnet restore "FeiraLivre.Api/FeiraLivre.Api.csproj"
 COPY . .
 WORKDIR "/src/FeiraLivre.Api"
 RUN dotnet build "FeiraLivre.Api.csproj" -c Release -o /app/build

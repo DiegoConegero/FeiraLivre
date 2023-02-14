@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="DEINFO_AB_FEIRASLIVRES_2014.xls" />
     <None Include="libmongocrypt.dylib" />
     <None Include="libmongocrypt.so" />
     <None Include="packages.config" />
