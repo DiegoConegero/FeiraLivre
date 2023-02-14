@@ -11,8 +11,13 @@ Possui cinco endpoints para manutenção de feiras, responsáveis por:
 - Alterar feira
 - Deletar feira
 
-### Instruções para rodar localmente
-Para executar a aplicação é necessário seguir os seguintes passos:\
+### Instruções para configurar o banco de dados
+Para configurar o banco de dados é necessário seguir os seguintes passos\
+1- Instalar o MongoDb 6.0.4 2008R2Plus SSL ou superior
+2- Executar o projeto FeiraLivre.AtualizarBanco
+
+### Instruções para rodar a aplicação local
+Para executar a aplicação é necessário seguir os seguintes passos\
 1- Abrir o terminal do git-bash\
 2- Fazer o clone do projeto e mudar para a branch develop\
 'git clone ssh:// nao sei mais'\
