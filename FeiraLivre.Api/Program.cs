@@ -10,7 +10,6 @@ using Serilog.Formatting.Json;
 using FeiraLivre.Core.Interfaces.Repository;
 using FeiraLivre.Core.Interfaces.UseCases;
 using FluentValidation;
-using FeiraLivre.Api.Models;
 using FeiraLivre.Core.Entities.Validators;
 using FeiraLivre.Core.Entities;
 
